@@ -24,7 +24,7 @@ interface SettingsModalProps {
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { firebaseConfig, updateFirebaseConfig } = useAuth();
-  const { state, loadSampleDemoData, resetAllData } = usePlan();
+  const { state, resetAllData } = usePlan();
 
   const [apiKey, setApiKey] = useState<string>(firebaseConfig?.apiKey || '');
   const [projectId, setProjectId] = useState<string>(firebaseConfig?.projectId || '');
@@ -199,19 +199,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           </div>
         </div>
 
-        {/* Demo data & Reset */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-800 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              loadSampleDemoData();
-              onClose();
-            }}
-            className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold underline"
-          >
-            Завантажити демо-приклад
-          </button>
-
+        {/* Reset All Data */}
+        <div className="flex items-center justify-end pt-2 border-t border-slate-800">
           <button
             type="button"
             onClick={() => {
@@ -220,10 +209,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 onClose();
               }
             }}
-            className="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1"
+            className="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1.5 p-2 rounded-lg hover:bg-rose-950/30 transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Скинути все</span>
+            <span>Очистити всі мої дані</span>
           </button>
         </div>
       </div>

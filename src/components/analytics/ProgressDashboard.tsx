@@ -102,11 +102,13 @@ export const ProgressDashboard: React.FC = () => {
       }
     });
 
-    const startW = metrics?.weight || (loggedWeights.length > 0 ? loggedWeights[0] : 80);
-    const latestW = loggedWeights.length > 0 ? loggedWeights[loggedWeights.length - 1] : startW;
-    const weightDiff = Math.round((latestW - startW) * 10) / 10;
+    const hasWeights = loggedWeights.length > 0;
+    const startW = hasWeights ? loggedWeights[0] : (metrics?.weight || 0);
+    const latestW = hasWeights ? loggedWeights[loggedWeights.length - 1] : startW;
+    const weightDiff = hasWeights && loggedWeights.length > 1 ? Math.round((latestW - startW) * 10) / 10 : 0;
 
     return {
+      hasWeights,
       completedDays,
       totalLoggedWithCalories,
       totalDeficit: Math.round(totalDeficit),
@@ -184,12 +186,12 @@ export const ProgressDashboard: React.FC = () => {
                 stats.weightDiff < 0 ? 'text-emerald-400' : stats.weightDiff > 0 ? 'text-amber-400' : 'text-slate-200'
               }`}
             >
-              {stats.weightDiff > 0 ? `+${stats.weightDiff}` : stats.weightDiff}
+              {stats.hasWeights ? (stats.weightDiff > 0 ? `+${stats.weightDiff}` : stats.weightDiff) : '0'}
             </span>
             <span className="text-xs text-slate-300 font-bold">кг</span>
           </div>
           <p className="text-[11px] text-slate-400">
-            {stats.startWeight} кг ➔ {stats.latestWeight} кг
+            {stats.hasWeights ? `${stats.startWeight} кг ➔ ${stats.latestWeight} кг` : 'Внесіть ранкові зважування'}
           </p>
         </div>
 

@@ -4,7 +4,6 @@ import { AppState, BodyMetrics, DailyLog, DietPlan } from '../types';
 import {
   calculateActiveStreak,
   DEFAULT_INITIAL_STATE,
-  getSampleInitialState,
   loadLocalAppState,
   saveLocalAppState,
 } from '../lib/storage';
@@ -25,7 +24,6 @@ interface PlanContextType {
   updateDailyLog: (logData: Partial<DailyLog> & { date: string }) => Promise<DailyLog>;
   quickLogCalories: (date: string, calories: number, weight?: number | null, notes?: string) => Promise<DailyLog>;
   toggleDayCompletion: (date: string) => Promise<boolean>;
-  loadSampleDemoData: () => void;
   resetAllData: () => void;
   syncWithCloud: () => Promise<void>;
 }
@@ -35,12 +33,7 @@ const PlanContext = createContext<PlanContextType | undefined>(undefined);
 export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [state, setState] = useState<AppState>(() => {
-    const local = loadLocalAppState();
-    // Якщо повністю порожньо, завантажимо початкові демо-дані для зручності
-    if (!local.metrics) {
-      return getSampleInitialState();
-    }
-    return local;
+    return loadLocalAppState();
   });
 
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -72,8 +65,8 @@ export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
           });
           setLastSyncedAt(new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }));
-        } else if (isMounted) {
-          // Якщо в хмарі ще немає даних, зберігаємо поточні локальні дані в хмару
+        } else if (isMounted && state.metrics) {
+          // Якщо в хмарі ще немає даних, зберігаємо поточні дані в хмару
           await saveUserDataToFirestore(user.uid, state);
           setLastSyncedAt(new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }));
         }
@@ -180,7 +173,6 @@ export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newStatus = !existing?.completed;
 
     if (newStatus) {
-      // Ефект конфеті при успішному закритті дня!
       try {
         confetti({
           particleCount: 80,
@@ -199,11 +191,6 @@ export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return newStatus;
-  };
-
-  const loadSampleDemoData = () => {
-    const sample = getSampleInitialState();
-    persistState(sample);
   };
 
   const resetAllData = () => {
@@ -236,7 +223,6 @@ export const PlanProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateDailyLog,
         quickLogCalories,
         toggleDayCompletion,
-        loadSampleDemoData,
         resetAllData,
         syncWithCloud,
       }}

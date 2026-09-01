@@ -35,7 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSettingsModal,
 }) => {
   const { user } = useAuth();
-  const { streak, isSyncing, lastSyncedAt, loadSampleDemoData } = usePlan();
+  const { streak, isSyncing, lastSyncedAt } = usePlan();
 
   const navItems: { id: TabType; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'tracker', label: 'Щоденник дня', icon: CheckCircle2 },

@@ -140,6 +140,24 @@ export const DailyTracker: React.FC<DailyTrackerProps> = ({ onOpenGoogleFitModal
 
   return (
     <div className="space-y-8 animate-fade-in">
+      {(!metrics || !plan) && (
+        <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/40 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-indigo-200">
+                Ви ще не зберегли індивідуальні параметри тіла
+              </p>
+              <p className="text-[11px] text-indigo-300/80">
+                Перейдіть у вкладку «Калькулятор тіла», щоб розрахувати вашу персональну норму та калорійний цикл.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Date Navigation Header */}
       <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Date Selector */}
